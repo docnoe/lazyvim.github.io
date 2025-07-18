@@ -90,22 +90,25 @@ Adding `keys=` follows the rules as explained above.
 You can also disable a default keymap by setting it to `false`.
 To override a keymap, simply add one with the same `lhs` and a new `rhs`.
 
-```lua title="lua/plugins/telescope.lua"
+```lua title="lua/plugins/snacks.lua"
 return {
-  "nvim-telescope/telescope.nvim",
+  "folke/snacks.nvim",
   keys = {
     -- disable the keymap to grep files
-    {"<leader>/", false},
+    { "<leader>/", false },
     -- change a keymap
-    { "<leader>ff", "<cmd>Telescope find_files<cr>", desc = "Find Files" },
+    { "<leader>ff", LazyVim.pick("files", { root = false }), desc = "Find Files (cwd)" },
     -- add a keymap to browse plugin files
     {
       "<leader>fp",
-      function() require("telescope.builtin").find_files({ cwd = require("lazy.core.config").options.root }) end,
+      function()
+        local plugins_path = vim.fn.fnamemodify(vim.fn.stdpath("config") .. "/lua/plugins", ":p")
+        LazyVim.pick.open("files", { cwd = plugins_path })
+      end,
       desc = "Find Plugin File",
     },
   },
-},
+}
 ```
 
 :::caution
